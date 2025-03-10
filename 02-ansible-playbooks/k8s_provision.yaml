@@ -1,0 +1,30 @@
+---
+- name: Configure Kubernetes Master
+  hosts: masters
+  become: true
+  roles:
+    - kubernetes_master
+
+- name: Configure Kubernetes Network
+  hosts: masters
+  become: true
+  roles:
+    - kubernetes_network
+
+- name: Configure Kubernetes Worker
+  hosts: workers
+  become: true
+  roles:
+    - kubernetes_worker
+
+- name: Flagger Kubernetes Worker
+  hosts: master-node1
+  become: true
+  roles:
+    - flag_first_worker
+
+- name: Regenerate certificates 
+  hosts: master-node
+  become: true
+  roles:
+    - kubernetes_tls_update
