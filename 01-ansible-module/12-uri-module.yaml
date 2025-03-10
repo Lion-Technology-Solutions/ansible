@@ -1,0 +1,13 @@
+- name: Make an HTTP request
+  hosts: localhost
+  tasks:
+    - name: Fetch data from a URL
+      ansible.builtin.uri:
+        url: https://example.com/api
+        method: GET
+        return_content: yes
+      register: response
+
+    - name: Print response
+      ansible.builtin.debug:
+        msg: "{{ response.content }}"

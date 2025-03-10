@@ -1,0 +1,8 @@
+- name: Create a user
+  hosts: all
+  tasks:
+    - name: Ensure user 'john' exists
+      ansible.builtin.user:
+        name: john
+        state: present
+        shell: /bin/bash

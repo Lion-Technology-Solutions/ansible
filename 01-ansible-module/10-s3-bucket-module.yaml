@@ -1,0 +1,12 @@
+- name: Create an S3 bucket
+  hosts: localhost
+  tasks:
+    - name: Ensure S3 bucket exists
+      community.aws.aws_s3_bucket:
+        name: my-bucket
+        state: present
+        region: us-east-1
+
+
+
+  # this module will require aws credentials 

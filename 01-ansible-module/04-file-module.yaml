@@ -1,0 +1,8 @@
+- name: Ensure Apache is running
+  hosts: webservers
+  tasks:
+    - name: Start Apache service
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes

@@ -1,0 +1,10 @@
+- name: Start a Docker container
+  hosts: localhost
+  tasks:
+    - name: Ensure a container is running
+      community.docker.docker_container:
+        name: my_container
+        image: nginx
+        state: started
+        ports:
+          - "8080:80"

@@ -1,0 +1,8 @@
+- name: Clone a git repository
+  hosts: all
+  tasks:
+    - name: Ensure repository is cloned
+      ansible.builtin.git:
+        repo: https://github.com/user/repo.git
+        dest: /path/to/clone
+        version: main

@@ -1,0 +1,5 @@
+- name: Run a shell command
+  hosts: all
+  tasks:
+    - name: Execute a shell command
+      ansible.builtin.shell: echo "Hello, World!" >> /tmp/hello.txt
