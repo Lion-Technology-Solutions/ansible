@@ -1,0 +1,10 @@
+- name: Copy a file to remote servers
+  hosts: all
+  tasks:
+    - name: Copy example file
+      ansible.builtin.copy:
+        src: /path/to/local/file.txt
+        dest: /path/to/remote/file.txt
+        owner: root
+        group: root
+        mode: '0644'

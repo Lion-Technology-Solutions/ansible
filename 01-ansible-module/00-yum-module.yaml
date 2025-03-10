@@ -1,0 +1,7 @@
+- name: Install Apache on CentOS
+  hosts: webservers   # localhost  / only on redhat and centos
+  tasks:
+    - name: Ensure Apache is installed
+      ansible.builtin.yum:
+        name: httpd
+        state: present

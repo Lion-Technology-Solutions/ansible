@@ -1,0 +1,12 @@
+- name: Install Nginx on Ubuntu
+  become: true
+  hosts: localhost
+  tasks:
+    - name: Ensure Nginx is installed
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+
+# ansible-playbook  02-apt-module.yaml  --ask-become-pass 
+# run playbook as root/admin user for succesful execution
