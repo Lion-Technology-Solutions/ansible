@@ -1,0 +1,9 @@
+- name: Add a cron job
+  hosts: all
+  tasks:
+    - name: Ensure a cron job exists
+      ansible.builtin.cron:
+        name: "Backup script"
+        minute: "0"
+        hour: "2"
+        job: "/opt/backup.sh"
