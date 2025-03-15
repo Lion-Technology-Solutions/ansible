@@ -1,0 +1,45 @@
+---
+- name: Deploy 'ansible' user to all remote hosts
+  hosts: all
+  become: yes
+  vars:
+    username: "ansible"  # Name of the user to create
+    ssh_public_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"  # Path to the SSH public key
+    user_groups: "sudo"  # Add the user to these groups (comma-separated)
+    user_password: "{{ 'password123' | password_hash('sha512') }}"  # Set a password (optional)
+  tasks:
+    - name: Ensure the 'ansible' user exists
+      ansible.builtin.user:
+        name: "{{ username }}"
+        state: present
+        groups: "{{ user_groups }}"
+        append: yes
+        shell: /bin/bash
+        password: "{{ user_password }}"  # Optional: Set a password
+
+    - name: Ensure the .ssh directory exists
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.ssh"
+        state: directory
+        mode: '0700'
+        owner: "{{ username }}"
+        group: "{{ username }}"
+
+    - name: Add SSH public key to authorized_keys
+      ansible.posix.authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ ssh_public_key }}"
+
+    - name: Ensure correct permissions for authorized_keys
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.ssh/authorized_keys"
+        mode: '0600'
+        owner: "{{ username }}"
+        group: "{{ username }}"
+
+    - name: Ensure sudo access for the 'ansible' user (optional)
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        line: "{{ username }} ALL=(ALL) NOPASSWD:ALL"  # Grant passwordless sudo access
+        validate: "visudo -cf %s"
