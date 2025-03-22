@@ -1,0 +1,13 @@
+---
+# Jenkins version to install
+jenkins_version: "latest"
+
+# Jenkins port
+jenkins_port: 8080
+
+# Jenkins admin user (if needed)
+jenkins_admin_user: "admin"
+
+# Jenkins admin password (if needed)
+jenkins_admin_password: "admin"
+# defaults file for jenkins
