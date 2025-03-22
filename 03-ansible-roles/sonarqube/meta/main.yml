@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: your_name
+  description: Ansible role to deploy SonarQube
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - bionic
+    - name: CentOS
+      versions:
+        - 7
+        - 8

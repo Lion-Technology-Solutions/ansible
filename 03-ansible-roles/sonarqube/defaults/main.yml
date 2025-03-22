@@ -1,0 +1,18 @@
+---
+# SonarQube version to install
+sonarqube_version: "9.9.1.69595"
+
+# SonarQube installation directory
+sonarqube_install_dir: "/opt/sonarqube"
+
+# SonarQube user and group
+sonarqube_user: "sonarqube"
+sonarqube_group: "sonarqube"
+
+# SonarQube port
+sonarqube_port: 9000
+
+# Database configuration (if using external database)
+sonarqube_db_url: "jdbc:postgresql://localhost:5432/sonarqube"
+sonarqube_db_username: "sonarqube"
+sonarqube_db_password: "sonarqube"

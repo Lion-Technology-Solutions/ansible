@@ -1,0 +1,6 @@
+---
+- name: Deploy SonarQube using the SonarQube role
+  hosts: all
+  become: yes
+  roles:
+    - role: sonarqube
