@@ -1,2 +1,78 @@
 ---
-# tasks file for sonarqube
+- name: Install dependencies
+  apt:
+    name:
+      - unzip
+      - curl
+      - openjdk-11-jdk
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Install dependencies (RedHat/CentOS)
+  yum:
+    name:
+      - unzip
+      - curl
+      - java-11-openjdk-devel
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Create SonarQube user and group
+  user:
+    name: "{{ sonarqube_user }}"
+    group: "{{ sonarqube_group }}"
+    system: yes
+    create_home: no
+
+- name: Download SonarQube
+  get_url:
+    url: "https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonarqube_version }}.zip"
+    dest: "/tmp/sonarqube-{{ sonarqube_version }}.zip"
+
+- name: Create SonarQube installation directory
+  file:
+    path: "{{ sonarqube_install_dir }}"
+    state: directory
+    owner: "{{ sonarqube_user }}"
+    group: "{{ sonarqube_group }}"
+    mode: '0755'
+
+- name: Unzip SonarQube
+  unarchive:
+    src: "/tmp/sonarqube-{{ sonarqube_version }}.zip"
+    dest: "{{ sonarqube_install_dir }}"
+    remote_src: yes
+    owner: "{{ sonarqube_user }}"
+    group: "{{ sonarqube_group }}"
+
+- name: Configure SonarQube
+  template:
+    src: sonar.properties.j2
+    dest: "{{ sonarqube_install_dir }}/sonarqube-{{ sonarqube_version }}/conf/sonar.properties"
+    owner: "{{ sonarqube_user }}"
+    group: "{{ sonarqube_group }}"
+    mode: '0644'
+
+- name: Create SonarQube systemd service
+  template:
+    src: sonarqube.service.j2
+    dest: /etc/systemd/system/sonarqube.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Start and enable SonarQube service
+  service:
+    name: sonarqube
+    state: started
+    enabled: yes
+
+- name: Wait for SonarQube to initialize
+  wait_for:
+    port: "{{ sonarqube_port }}"
+    delay: 10
+    timeout: 300
