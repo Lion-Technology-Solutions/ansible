@@ -1,0 +1,14 @@
+[Unit]
+Description=SonarQube service
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User={{ sonarqube_user }}
+Group={{ sonarqube_group }}
+ExecStart={{ sonarqube_install_dir }}/sonarqube-{{ sonarqube_version }}/bin/linux-x86-64/sonar.sh start
+ExecStop={{ sonarqube_install_dir }}/sonarqube-{{ sonarqube_version }}/bin/linux-x86-64/sonar.sh stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
