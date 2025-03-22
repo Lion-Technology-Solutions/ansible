@@ -1,0 +1,10 @@
+#  Apache maven version to install  to install 
+
+maven_version: "3.9.9"
+
+# maven installation directory
+
+maven_install_dir:  "/opt/maven"  # /opt/mtn-project
+
+#maven downlord url: 
+maven_download_url: "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz"

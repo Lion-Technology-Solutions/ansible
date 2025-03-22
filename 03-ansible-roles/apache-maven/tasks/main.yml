@@ -1,0 +1,46 @@
+---
+- name: Install dependencies
+  apt:
+    name:
+      - curl
+      - tar
+    state: present
+
+- name: Create Maven installation directory
+  file:
+    path: "{{ maven_install_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download Apache Maven
+  get_url:
+    url: "{{ maven_download_url }}"
+    dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+
+- name: Extract Apache Maven
+  unarchive:
+    src: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+    dest: "{{ maven_install_dir }}"
+    remote_src: yes
+    mode: '0755'
+
+- name: Set up Maven environment variables
+  blockinfile:
+    path: /etc/environment
+    block: |
+      MAVEN_HOME={{ maven_install_dir }}/apache-maven-{{ maven_version }}
+      PATH=$PATH:{{ maven_install_dir }}/apache-maven-{{ maven_version }}/bin
+    create: yes
+
+- name: Reload environment variables
+  command: source /etc/environment
+  changed_when: false
+
+- name: Verify Maven installation
+  command: mvn -version
+  register: maven_version_output
+  changed_when: false
+
+- name: Display Maven version
+  debug:
+    msg: "{{ maven_version_output.stdout }}"

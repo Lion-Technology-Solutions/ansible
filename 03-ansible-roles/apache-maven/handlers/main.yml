@@ -1,0 +1,4 @@
+--- 
+- name: Reload the environment variable
+  command:  source /etc/environment
+  changed_when: false    # conditionals in ansible. 
