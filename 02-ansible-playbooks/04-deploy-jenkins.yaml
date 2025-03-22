@@ -1,0 +1,80 @@
+---
+- name: Deploy Jenkins on all remote hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache (for Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install required dependencies (for Debian/Ubuntu)
+      apt:
+        name:
+          - openjdk-11-jdk
+          - wget
+          - gnupg
+          - software-properties-common
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Add Jenkins repository key (for Debian/Ubuntu)
+      apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Add Jenkins repository (for Debian/Ubuntu)
+      apt_repository:
+        repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install Jenkins (for Debian/Ubuntu)
+      apt:
+        name: jenkins
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install required dependencies (for RedHat/CentOS)
+      yum:
+        name:
+          - java-11-openjdk-devel
+          - wget
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Add Jenkins repository (for RedHat/CentOS)
+      yum_repository:
+        name: jenkins
+        description: Jenkins Repository
+        baseurl: https://pkg.jenkins.io/redhat-stable/
+        gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+        gpgcheck: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Jenkins (for RedHat/CentOS)
+      yum:
+        name: jenkins
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Start Jenkins service
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Wait for Jenkins to initialize
+      wait_for:
+        port: 8080
+        delay: 10
+        timeout: 300
+
+    - name: Display Jenkins initial admin password
+      shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_password
+
+    - name: Print Jenkins initial admin password
+      debug:
+        msg: "Jenkins initial admin password: {{ jenkins_password.stdout }}"
